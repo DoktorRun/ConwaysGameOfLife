@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace ConwaysGameOfLife
 {
     //This rule is equal to the description of 23/3 strategy.
-    class ConwayClassicRuleStrategy : IGameRuleStrategy
+    public class ConwayClassicRuleStrategy : IGameRuleStrategy
     {
         public void BirthRule(Cell cell)
         {

@@ -1,4 +1,5 @@
 using ConwaysGameOfLife;
+using System.ComponentModel.Design;
 
 namespace GameOfLifeTest
 {
@@ -39,7 +40,7 @@ namespace GameOfLifeTest
                     {
                         gliderArray[i, j] = new Cell(i, j);
                     }
-                    if (expectedAfterTwoGenerations[i,j] is null)
+                    if (expectedAfterTwoGenerations[i, j] is null)
                     {
                         expectedAfterTwoGenerations[i, j] = new Cell(i, j);
                     }
@@ -115,15 +116,15 @@ namespace GameOfLifeTest
             Cell[,] expected = new Cell[20, 20];
             Array.Copy(objects, expected, objects.Length);
 
-            for(int i = 0; i < objects.GetLength(0); i++)
+            for (int i = 0; i < objects.GetLength(0); i++)
             {
-                for(int j = 0; j < objects.GetLength(0); j++)
+                for (int j = 0; j < objects.GetLength(0); j++)
                 {
-                    if (objects[i,j] is null)
+                    if (objects[i, j] is null)
                     {
                         objects[i, j] = new Cell(i, j);
                     }
-                    if (expected[i,j] is null)
+                    if (expected[i, j] is null)
                     {
                         expected[i, j] = new Cell(i, j);
                     }
@@ -224,6 +225,67 @@ namespace GameOfLifeTest
             CollectionAssert.AreEqual(expectedEven, oscillators);
             Program.NextGeneration(ref oscillators);
             CollectionAssert.AreNotEqual(expectedEven, oscillators);
+        }
+
+        [TestMethod]
+        public void TestThreeFourToThreeCustomRuleOnConeFigure(
+        {
+            Program.currentRuleSet = new ThreeFourToThreeRuleStrategy();
+            Cell[,] gameBoard = new Cell[5, 5];
+            gameBoard[0, 0] = new Cell(0, 0, true); // O . .
+            gameBoard[1, 1] = new Cell(1, 1, true); // . O O
+            gameBoard[1, 2] = new Cell(1, 2, true); // . O
+            gameBoard[2, 1] = new Cell(2, 1, true);
+
+
+
+
+            Cell[,] expectedOdd = new Cell[5, 5];
+            expectedOdd[0, 1] = new Cell(0, 1, true); // . O .
+            expectedOdd[1, 1] = new Cell(1, 1, true); // O O .
+            expectedOdd[1, 0] = new Cell(1, 0, true); // . . O
+            expectedOdd[2, 2] = new Cell(2, 2, true);
+
+            Cell[,] expectedEven = new Cell[5, 5];
+            Array.Copy(gameBoard, expectedEven, gameBoard.Length);
+
+            for (int i = 0; i < gameBoard.GetLength(0); i++)
+            {
+                for (int j = 0; j < gameBoard.GetLength(1); j++)
+                {
+                    if (gameBoard[i, j] is null)
+                    {
+                        gameBoard[i, j] = new Cell(i, j);
+                    }
+                    if (expectedEven[i, j] is null)
+                    {
+                        expectedEven[i, j] = new Cell(i, j);
+                    }
+                    if (expectedOdd[i, j] is null)
+                    {
+                        expectedOdd[i, j] = new Cell(i, j);
+                    }
+                }
+            }
+
+            Program.AddAllNeighbours(ref gameBoard);
+            Program.AddAllNeighbours(ref expectedEven);
+            Program.AddAllNeighbours(ref expectedOdd);
+
+            Random r = new Random();
+            int rounds = r.Next(1, 10);
+            for (int roundCounter = 0; roundCounter < rounds; roundCounter++)
+            {
+                Program.NextGeneration(ref gameBoard);
+            }
+            if (rounds % 2 == 0)
+            {
+                CollectionAssert.AreEqual(expectedEven, gameBoard);
+            }
+            else if (rounds % 2 == 1)
+            {
+                CollectionAssert.AreEqual(expectedOdd, gameBoard);
+            }
         }
     }
 }

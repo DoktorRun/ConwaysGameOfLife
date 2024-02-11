@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConwaysGameOfLife
 {
-    class ThreeFourToThreeRuleStrategy : IGameRuleStrategy
+    public class ThreeFourToThreeRuleStrategy : IGameRuleStrategy
     {
         public void BirthRule(Cell cell)
         {

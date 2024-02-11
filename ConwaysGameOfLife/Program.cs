@@ -7,7 +7,7 @@ public class Program
 {
 
     static int DIM = 5;
-    static IGameRuleStrategy currentRuleSet = new ConwayClassicRuleStrategy();
+    public static IGameRuleStrategy currentRuleSet = new ConwayClassicRuleStrategy();
     static List<string> rulesetChoice = new();
 
     static void Main()

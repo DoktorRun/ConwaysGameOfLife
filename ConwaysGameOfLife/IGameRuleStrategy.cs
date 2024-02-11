@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConwaysGameOfLife
 {
-    interface IGameRuleStrategy
+    public interface IGameRuleStrategy
     {
         void BirthRule(Cell cell);
         void DeathRule(Cell cell);
