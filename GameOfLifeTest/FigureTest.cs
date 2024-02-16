@@ -228,7 +228,7 @@ namespace GameOfLifeTest
         }
 
         [TestMethod]
-        public void TestThreeFourToThreeCustomRuleOnConeFigure(
+        public void TestThreeFourToThreeCustomRuleOnConeFigure()
         {
             Program.currentRuleSet = new ThreeFourToThreeRuleStrategy();
             Cell[,] gameBoard = new Cell[5, 5];
