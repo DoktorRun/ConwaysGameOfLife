@@ -14,41 +14,53 @@ namespace ConwaysGameOfLife_UI.ViewModels
 {
     public class GameViewModel : INotifyPropertyChanged
     {
-        private GameModel _gameModel;
+        public GameModel GameModel { get; }
         private DispatcherTimer _timer;
+
+        string milliSeconds = string.Empty;
+        const double DEFAULT_INTERVAL = 500;
+
+
+        private bool _isRunning;
 
         public ObservableCollection<ObservableCollection<bool>> Cells { get; set; } = new();
         public GameViewModel(GameModel gameModel)
         {
-            _gameModel = gameModel;
-            _gameModel.GameRule = new ConwayClassicRuleset();
-            Cells = ConvertArrayToObservableCollection(_gameModel.Cells);
+            GameModel = gameModel;
+            GameModel.GameRule = new ConwayClassicRuleset();
+            Cells = ConvertArrayToObservableCollection(GameModel.Cells);
 
             _timer = new();
-            _timer.Interval = TimeSpan.FromMilliseconds(250);
+            _timer.Interval = TimeSpan.FromMilliseconds(DEFAULT_INTERVAL);
             //Ist ein Eventhandler der aufgerufen werden soll, jedes mal wenn ein Tick von Interval ausgeführt wird.
             _timer.Tick += Timer_Tick;
         }
 
         private void Timer_Tick(object? sender, EventArgs e)
         {
-            _gameModel.NextGeneration();
+            GameModel.NextGeneration();
             UpdateCells();
         }
 
-        private void UpdateCells()
+        public void SetTimerMilliSeconds(double ms)
         {
+            _timer.Interval = TimeSpan.FromMilliseconds(ms);
+        }
+
+        public async void UpdateCells()
+        {
+            await Task.Delay(50);
             //Dispatcher.Invoke wird genutzt, um auf dem UI Thread die Methode auszuführen.
             Application.Current.Dispatcher.Invoke(() =>
             {
-                Cells = ConvertArrayToObservableCollection(_gameModel.Cells);
+                Cells = ConvertArrayToObservableCollection(GameModel.Cells);
                 OnPropertyChanged(nameof(Cells));
             });
         }
 
         private ObservableCollection<ObservableCollection<bool>> ConvertArrayToObservableCollection(bool[,] cells)
         {
-            ObservableCollection<ObservableCollection<bool>> result = new ObservableCollection<ObservableCollection<bool>>();
+            ObservableCollection<ObservableCollection<bool>> result = new();
 
             for (int i = 0; i < cells.GetLength(0); i++)
             {
@@ -70,11 +82,17 @@ namespace ConwaysGameOfLife_UI.ViewModels
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            Console.WriteLine("TESTTESTTESTTEST");
         }
 
         public void StartGame()
         {
             _timer.Start();
+        }
+
+        public void PauseGame()
+        {
+            _timer.Stop();
         }
     }
 }

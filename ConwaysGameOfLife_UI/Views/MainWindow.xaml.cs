@@ -1,4 +1,5 @@
-﻿using ConwaysGameOfLife_UI.Models;
+﻿using ConwaysGameOfLife_UI.Helpers;
+using ConwaysGameOfLife_UI.Models;
 using ConwaysGameOfLife_UI.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -22,16 +23,70 @@ namespace ConwaysGameOfLife_UI.Views
     /// </summary>
     public partial class MainWindow : Window
     {
+        bool simulationIsRunning = false;
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new GameViewModel(new GameModel(10,10));
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-{
-    (DataContext as GameViewModel)?.StartGame();
-}
+        private void GenerateField(object sender, RoutedEventArgs e)
+        {
+            DataContext = new GameViewModel(new GameModel(15, 15));
+            GameViewModel viewModel = (GameViewModel)DataContext;
 
+            gameCanvas.Children.Clear();
+
+            for (int row = 0; row < viewModel.Cells.Count; row++)
+            {
+                for (int col = 0; col < viewModel.Cells[row].Count; col++)
+                {
+                    Rectangle rect = new();
+
+                    rect.Width = gameCanvas.ActualWidth / viewModel.Cells[row].Count - 1;
+                    rect.Height = gameCanvas.ActualHeight / viewModel.Cells.Count - 1;
+
+                    Binding binding = new Binding($"Cells[{row}][{col}]");
+                    binding.Source = viewModel;
+                    binding.Converter = new BoolToColorConverter();
+
+                    rect.SetBinding(Rectangle.FillProperty, binding);
+
+                    gameCanvas.Children.Add(rect);
+                    Canvas.SetLeft(rect, col * gameCanvas.ActualWidth / viewModel.Cells[row].Count);
+                    Canvas.SetTop(rect, row * gameCanvas.ActualHeight / viewModel.Cells.Count);
+                    rect.MouseDown += FlipState;
+                }
+            }
+        }
+
+        private void FlipState(object sender, MouseButtonEventArgs e)
+        {
+            Rectangle rect = (Rectangle)sender;
+            GameViewModel viewModel = (GameViewModel)DataContext;
+
+            int row = (int)(Math.Ceiling(Canvas.GetTop(rect) / gameCanvas.ActualHeight * viewModel.Cells.Count));
+            int col = (int)(Math.Ceiling(Canvas.GetLeft(rect) / gameCanvas.ActualWidth * viewModel.Cells[row].Count));
+            viewModel.GameModel.FlipCell(row, col);
+            viewModel.UpdateCells();
+        }
+
+        private void StartSimulation(object sender, RoutedEventArgs e)
+        {
+            GameViewModel viewModel = (GameViewModel)DataContext;
+            if (!simulationIsRunning)
+            {
+                SimulationStatusButton.Content = "Pause simulation!";
+                viewModel.SetTimerMilliSeconds(double.Parse(TimerMSText.Text));
+                viewModel.StartGame();
+                simulationIsRunning = true;
+            }
+            else
+            {
+                SimulationStatusButton.Content = "Start simulation!";
+                viewModel.PauseGame();
+                simulationIsRunning = false;
+            }
+            
+        }
     }
 }

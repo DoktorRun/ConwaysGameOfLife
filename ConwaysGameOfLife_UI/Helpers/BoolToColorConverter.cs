@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 
@@ -14,10 +15,9 @@ namespace ConwaysGameOfLife_UI.Helpers
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             //Komische Konstruktion namens "Pattern Matching mit Type und Property" aus C#7, habs noch nicht 100%ig verstanden aber funktioniert fürs erste.
-            if (value is bool boolValue && boolValue)
-                return Brushes.Black;
-            else 
-                return Brushes.White;
+            if (value is bool boolValue)
+                return boolValue ? Brushes.ForestGreen : Brushes.DarkRed;
+            return DependencyProperty.UnsetValue;
         }
 
         //Fragwürdig ob nützlich oder nicht, Interface benötigt es aber

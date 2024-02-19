@@ -1,4 +1,5 @@
 ﻿using ConwaysGameOfLife_UI.Abstractions;
+using ConwaysGameOfLife_UI.Implementations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,7 @@ namespace ConwaysGameOfLife_UI.Models
         {
             Cells = new bool[width, height];
             InitializeRandom();
+            GameRule = new ConwayClassicRuleset();
         }
 
         public void InitializeRandom()
@@ -32,6 +34,11 @@ namespace ConwaysGameOfLife_UI.Models
             }
         }
 
+        public void FlipCell(int i, int j)
+        {
+            Cells[i, j] = !Cells[i, j];
+        }
+
         public void NextGeneration()
         {
             bool[,] temp = new bool[Cells.GetLength(0), Cells.GetLength(1)];
@@ -42,10 +49,8 @@ namespace ConwaysGameOfLife_UI.Models
                 for (int j = 0; j < Cells.GetLength(1); j++)
                 {
                     int cellNeighbourCount = CountNeighbours(i, j);
-                    if (Cells[i, j]) GameRule.DeathRule(cellNeighbourCount);
-                    else GameRule.BirthRule(cellNeighbourCount);
-
-                    temp[i, j] = Cells[i, j];
+                    if (Cells[i, j]) temp[i,j] = GameRule.DeathRule(cellNeighbourCount);
+                    else temp[i, j] = GameRule.BirthRule(cellNeighbourCount);
                 }
             }
             Cells = temp;

@@ -1,5 +1,4 @@
 using ConwaysGameOfLife;
-using System.ComponentModel.Design;
 
 namespace GameOfLifeTest
 {
@@ -288,4 +287,6 @@ namespace GameOfLifeTest
             }
         }
     }
+
+
 }
