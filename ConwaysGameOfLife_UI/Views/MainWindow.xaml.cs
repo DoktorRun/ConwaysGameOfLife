@@ -31,7 +31,7 @@ namespace ConwaysGameOfLife_UI.Views
 
         private void GenerateField(object sender, RoutedEventArgs e)
         {
-            DataContext = new GameViewModel(new GameModel(15, 15));
+            DataContext = new GameViewModel(new GameModel(30, 30));
             GameViewModel viewModel = (GameViewModel)DataContext;
 
             gameCanvas.Children.Clear();
@@ -76,7 +76,8 @@ namespace ConwaysGameOfLife_UI.Views
             if (!simulationIsRunning)
             {
                 SimulationStatusButton.Content = "Pause simulation!";
-                viewModel.SetTimerMilliSeconds(double.Parse(TimerMSText.Text));
+                double ms;
+                viewModel.SetTimerMilliSeconds(double.TryParse(TimerMSText.Text, out ms) ? ms : 500);
                 viewModel.StartGame();
                 simulationIsRunning = true;
             }
