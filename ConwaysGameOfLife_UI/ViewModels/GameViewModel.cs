@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using ConwaysGameOfLife;
 
 namespace ConwaysGameOfLife_UI.ViewModels
 {
@@ -27,7 +28,7 @@ namespace ConwaysGameOfLife_UI.ViewModels
         public GameViewModel(GameModel gameModel)
         {
             GameModel = gameModel;
-            GameModel.GameRule = new ConwayClassicRuleset();
+            GameModel.GameRule = new Snake();
             Cells = ConvertArrayToObservableCollection(GameModel.Cells);
 
             _timer = new();
@@ -49,7 +50,7 @@ namespace ConwaysGameOfLife_UI.ViewModels
 
         public async void UpdateCells()
         {
-            await Task.Delay(50);
+            //await Task.Delay(50);
             //Dispatcher.Invoke wird genutzt, um auf dem UI Thread die Methode auszuführen.
             Application.Current.Dispatcher.Invoke(() =>
             {

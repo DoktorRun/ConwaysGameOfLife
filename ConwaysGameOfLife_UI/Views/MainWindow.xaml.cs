@@ -31,7 +31,7 @@ namespace ConwaysGameOfLife_UI.Views
 
         private void GenerateField(object sender, RoutedEventArgs e)
         {
-            DataContext = new GameViewModel(new GameModel(30, 30));
+            DataContext = new GameViewModel(new GameModel(40, 40));
             GameViewModel viewModel = (GameViewModel)DataContext;
 
             gameCanvas.Children.Clear();
@@ -42,8 +42,8 @@ namespace ConwaysGameOfLife_UI.Views
                 {
                     Rectangle rect = new();
 
-                    rect.Width = gameCanvas.ActualWidth / viewModel.Cells[row].Count - 1;
-                    rect.Height = gameCanvas.ActualHeight / viewModel.Cells.Count - 1;
+                    rect.Width = gameCanvas.ActualWidth / viewModel.Cells[row].Count;
+                    rect.Height = gameCanvas.ActualHeight / viewModel.Cells.Count;
 
                     Binding binding = new Binding($"Cells[{row}][{col}]");
                     binding.Source = viewModel;
@@ -64,8 +64,12 @@ namespace ConwaysGameOfLife_UI.Views
             Rectangle rect = (Rectangle)sender;
             GameViewModel viewModel = (GameViewModel)DataContext;
 
-            int row = (int)(Math.Ceiling(Canvas.GetTop(rect) / gameCanvas.ActualHeight * viewModel.Cells.Count));
-            int col = (int)(Math.Ceiling(Canvas.GetLeft(rect) / gameCanvas.ActualWidth * viewModel.Cells[row].Count));
+            //int row = (int)(Math.Ceiling(Canvas.GetTop(rect) / gameCanvas.ActualHeight * viewModel.Cells.Count));
+            //int col = (int)(Math.Ceiling(Canvas.GetLeft(rect) / gameCanvas.ActualWidth * viewModel.Cells[row].Count));
+
+            int row = (int)(Canvas.GetTop(rect) / gameCanvas.ActualHeight * viewModel.Cells.Count);
+            int col = (int)(Canvas.GetLeft(rect) / gameCanvas.ActualWidth * viewModel.Cells[row].Count);
+
             viewModel.GameModel.FlipCell(row, col);
             viewModel.UpdateCells();
         }
